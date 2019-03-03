@@ -1,3 +1,4 @@
 chromedriver
 config.txt
 /.idea
+.gitignore
