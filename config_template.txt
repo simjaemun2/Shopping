@@ -1,0 +1,9 @@
+[funlife]
+id=
+password=
+num_of_happy=5
+path_webdriver=
+url_root=
+url_login=/users/login
+url_item=/mall/item
+url_happy_list=
