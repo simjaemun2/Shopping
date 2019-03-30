@@ -20,8 +20,9 @@ class Funlife:
         options = webdriver.ChromeOptions()
         if config['webdriver']['headless'] == 'True':
             options.add_argument('headless')
-        options.add_argument('window-size=1920x1080')
+        options.add_argument('window-size=640x360')
         options.add_argument("disable-gpu")
+        options.add_argument("--disable-dev-shm-usage")
         print(config['path']['webdriver'])
         driver = webdriver.Chrome(config['path']['webdriver'], options=options)
         driver.implicitly_wait(int(self.config['webdriver']['timeout']))
