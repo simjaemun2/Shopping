@@ -12,8 +12,8 @@ Shopping mall site will be added.
 ## Usage
 
 ``` bash
-funlife_buy.py <config file path> &
-funlife_coupon.py <config file path> &
+python funlife_buy.py <config file path> &
+python funlife_coupon.py <config file path> &
 ```
 - config file path : config file for funlife
 

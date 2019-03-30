@@ -14,7 +14,7 @@ class Funlife:
     def __init__(self, config):
         self.config = config
         self.driver = self.__init_webdriver(config)
-        self.__login(config, self.driver)
+        self.__login()
 
     def __init_webdriver(self, config):
         options = webdriver.ChromeOptions()
@@ -23,14 +23,17 @@ class Funlife:
         options.add_argument('window-size=1920x1080')
         options.add_argument("disable-gpu")
         print(config['path']['webdriver'])
-        return webdriver.Chrome(config['path']['webdriver'], options=options)
+        driver = webdriver.Chrome(config['path']['webdriver'], options=options)
+        driver.implicitly_wait(int(self.config['webdriver']['timeout']))
+        return driver
 
-    def __login(self, config, driver):
-        url_login = config['url']['root'] + config['url']['login']
-        driver.get(url_login)
-        driver.find_element_by_id('user_id').send_keys(config['login']['id'])
-        driver.find_element_by_id('password').send_keys(config['login']['password'])
-        driver.execute_script("login()")
+    def __login(self):
+        url_login = self.config['url']['root'] + self.config['url']['login']
+        self.driver.get(url_login)
+        self.driver.find_element_by_id('user_id').send_keys(self.config['login']['id'])
+        self.driver.find_element_by_id('password').send_keys(self.config['login']['password'])
+        self.driver.execute_script("login()")
+
 
     def get_webdriver(self):
         return self.driver
@@ -72,8 +75,8 @@ class Funlife:
         try_count = int(self.config['happy']['try_count'])
         url_shop3 = "%s%s" % (self.config['url']['root'], self.config['url']['shop3'])
         sleep_sec = float(self.config['happy']['sleep_sec'])
-        order_count_up = int(self.config['happy']['num_happy']) - 1
-        price = int(self.config['happy']['price']) * (order_count_up + 1)
+        num_happy = int(self.config['happy']['num_happy'])
+        price = int(self.config['happy']['price']) * num_happy
 
         for i in range(try_count):
             self.driver.get(url_shop3)
@@ -81,18 +84,25 @@ class Funlife:
             happy_url_list = [s.get_attribute("href") for s in href_list if self.config['url']['item'] in s.get_attribute("href")]
 
             if len(happy_url_list) > 0:
+                self.driver.get(happy_url_list[0])
                 for j in range(try_count):
                     print('today happy URL : %s' % happy_url_list[0])
-                    self.driver.get(happy_url_list[0])
-                    self.driver.execute_script("order_count_change(%d, false)" % order_count_up)
+
+                    self.driver.execute_script("order_count_change(%d, true)" % num_happy)
                     self.driver.execute_script("document.getElementById('check_info').checked = true")
                     self.driver.execute_script("document.getElementById('check_warn').checked = true")
                     self.driver.execute_script("document.getElementById('checkAll').checked = true")
-                    self.driver.execute_script("document.getElementById('use_point').value = %d" % price )
+                    self.driver.execute_script("$('#use_point').val('%d')" % price)
+                    self.driver.execute_script("$('#use_point').blur()")
                     self.driver.execute_script("click_card_btn()")
                     self.driver.execute_script("click_pay()")
+
                     print('success to buy : %s' % str(j+1))
+
                     sleep(sleep_sec)
+
+                    self.driver.get(happy_url_list[0])
+
                 self.driver.quit()
                 break
             else:
