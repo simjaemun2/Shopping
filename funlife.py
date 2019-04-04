@@ -42,9 +42,8 @@ class Funlife:
 
     def __get_filtered_coupon_list(self):
         with open(self.config['path']['funcoupon'], 'r') as file:
-            filter_coupon = self.config['funcoupon']['filter_coupon']
             coupones = ["".join(s.split()[2].split('-'))
-                        for s in filter(lambda x: x.startswith(filter_coupon), file.readlines())]
+                        for s in filter(lambda x: x.count('-') == 3, file.readlines())]
         return coupones
 
     def register_coupon(self):
@@ -59,6 +58,7 @@ class Funlife:
         cnt_coupon = 0
 
         for coupon in coupon_list:
+            print(coupon)
             self.driver.execute_script("document.getElementById('coupon_id').value = '%s'" % coupon)
             self.driver.execute_script("regCoupon()")
             WebDriverWait(self.driver, popopup_delay).until(EC.alert_is_present(),
