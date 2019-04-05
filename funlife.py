@@ -82,31 +82,35 @@ class Funlife:
 
         for i in range(try_count):
             self.driver.get(url_shop3)
-            href_list = self.driver.find_elements_by_xpath("//a[@href]")
-            happy_url_list = [s.get_attribute("href") for s in href_list if self.config['url']['item'] in s.get_attribute("href")]
 
-            if len(happy_url_list) > 0:
-                self.driver.get(happy_url_list[0])
-                for j in range(try_count):
-                    print('today happy URL : %s' % happy_url_list[0])
+            try:
+                href_list = self.driver.find_elements_by_xpath("//a[@href]")
+                happy_url_list = [s.get_attribute("href") for s in href_list if self.config['url']['item'] in s.get_attribute("href")]
 
-                    self.driver.execute_script("order_count_change(%d, true)" % num_happy)
-                    self.driver.execute_script("document.getElementById('check_info').checked = true")
-                    self.driver.execute_script("document.getElementById('check_warn').checked = true")
-                    self.driver.execute_script("document.getElementById('checkAll').checked = true")
-                    self.driver.execute_script("$('#use_point').val('%d')" % price)
-                    self.driver.execute_script("$('#use_point').blur()")
-                    self.driver.execute_script("click_card_btn()")
-                    self.driver.execute_script("click_pay()")
-
-                    print('success to buy : %s' % str(j+1))
-
-                    sleep(sleep_sec)
-
+                if len(happy_url_list) > 0:
                     self.driver.get(happy_url_list[0])
+                    for j in range(try_count):
+                        print('today happy URL : %s' % happy_url_list[0])
 
-                self.driver.quit()
-                break
-            else:
-                print("Item is not opened!!")
+                        self.driver.execute_script("order_count_change(%d, true)" % num_happy)
+                        self.driver.execute_script("document.getElementById('check_info').checked = true")
+                        self.driver.execute_script("document.getElementById('check_warn').checked = true")
+                        self.driver.execute_script("document.getElementById('checkAll').checked = true")
+                        self.driver.execute_script("$('#use_point').val('%d')" % price)
+                        self.driver.execute_script("$('#use_point').blur()")
+                        self.driver.execute_script("click_card_btn()")
+                        self.driver.execute_script("click_pay()")
+
+                        print('success to buy : %s' % str(j+1))
+
+                        sleep(sleep_sec)
+
+                        self.driver.get(happy_url_list[0])
+
+                    self.driver.quit()
+                    break
+                else:
+                    print("Item is not opened!!")
+            except Exception:
+                print("unexpected error!!")
             sleep(sleep_sec)
