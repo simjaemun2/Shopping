@@ -90,6 +90,11 @@ class Funlife:
 
                 if len(happy_url_list) > 0:
                     self.driver.get(happy_url_list[0])
+
+                    if "해피" not in self.driver.find_element_by_class_name('item_header').text:
+                        print('today item is not happy!!!!!')
+                        break
+
                     for j in range(try_count):
                         print('today happy URL : %s' % happy_url_list[0])
 
@@ -115,3 +120,4 @@ class Funlife:
             except Exception:
                 print("unexpected error!!")
             sleep(sleep_sec)
+        self.driver.quit()
