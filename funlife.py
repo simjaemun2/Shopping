@@ -93,7 +93,6 @@ class Funlife:
 
                     if "해피" not in self.driver.find_element_by_class_name('item_header').text:
                         print('today item is not happy!!!!!')
-                        break
 
                     for j in range(try_count):
                         print('today happy URL : %s' % happy_url_list[0])
